@@ -90,7 +90,7 @@ def py_note_url(url):
     :param url:
     :return:
     """
-    res = requests.get(url, headers=headers_xiao_hong_shu_note, verify=False)
+    res = requests.get(url, headers=headers_xiao_hong_shu_note)
     res.encoding = 'utf-8'
     str_json = json.loads(res.content)
     str_likes = str_json['data']['likes']  # 赞
@@ -134,7 +134,7 @@ def get_user_note(uid):
     print(x_sign)
     headers_user['x-sign'] = x_sign
     res = requests.get('https://www.xiaohongshu.com/fe_api/burdock/weixin/v2/user/' +
-                       uid+'/notes?page=1&page_size=15', headers=headers_user, verify=False)
+                       uid+'/notes?page=1&page_size=15', headers=headers_user)
     res.encoding = 'utf-8'
     return res.content
 
@@ -150,7 +150,7 @@ def get_base_info(uid):
     print(x_sign)
     headers_user['x-sign'] = x_sign
     res = requests.get('https://www.xiaohongshu.com/fe_api/burdock/weixin/v2/user/' +
-                       uid, headers=headers_user, verify=False)
+                       uid, headers=headers_user)
     res.encoding = 'utf-8'
     return res.content
 
