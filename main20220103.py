@@ -177,7 +177,7 @@ def get_note_info(uuid):
     :return:
     """
     note_url = "https://www.xiaohongshu.com/fe_api/burdock/weixin/v2/note/" + \
-        str(uuid)
+        str(uuid) + '/single_feed'
     x_sign_note = get_xsign_note(uuid)  # 获取x_sign_note = 值
     print(x_sign_note)
     headers_xiao_hong_shu_note['x-sign'] = x_sign_note
