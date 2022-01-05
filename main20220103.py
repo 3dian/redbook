@@ -95,6 +95,7 @@ def py_note_url(url):
     res = requests.get(url, headers=headers_xiao_hong_shu_note, verify=False)
     res.encoding = 'utf-8'
     str_json = json.loads(res.content)
+    print("data:"+ str_json)
     str_likes = str_json['data']['likes']  # 赞
     str_comments = str_json['data']['comments']  # 评论
     str_share_count = str_json['data']['shareCount']  # 转发
