@@ -24,7 +24,7 @@ test_user_note = 'https://www.xiaohongshu.com/fe_api/burdock/weixin/v2/user/5ef9
 
 headers_xiao_hong_shu_note = {
     'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E217 MicroMessenger/6.8.0(0x16080000) NetType/WIFI Language/en Branch/Br_trunk MiniProgramEnv/Mac',
-    "accept-language": 'zh-CN,zh;q=0.9,ko;q=0.8,en;q=0.7',
+    "accept-language": 'zh-cn',
     'Authorization': 'wxmp.5bc12c75-bbe4-4022-bd1e-ff8d75f27007',
 }
 
@@ -32,7 +32,7 @@ headers_xiao_hong_shu_note = {
 
 headers_user = {
     'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E217 MicroMessenger/6.8.0(0x16080000) NetType/WIFI Language/en Branch/Br_trunk MiniProgramEnv/Mac',
-    "accept-language": 'zh-CN,zh;q=0.9,ko;q=0.8,en;q=0.7',
+    "accept-language": 'zh-cn',
     "Authorization": 'wxmp.5bc12c75-bbe4-4022-bd1e-ff8d75f27007',
 }
 
