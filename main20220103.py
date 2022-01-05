@@ -26,14 +26,16 @@ headers_xiao_hong_shu_note = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
     "accept-language": 'zh-cn',
     'Authorization': 'wxmp.ba6d4702-ca72-4b2e-a1a3-8b396fc63c8e',
+    'Referer':'https://servicewechat.com/wxb296433268a1c654/60/page-frame.html'
 }
 
 # 添加user请求头
 
 headers_user = {
-    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E217 MicroMessenger/6.8.0(0x16080000) NetType/WIFI Language/en Branch/Br_trunk MiniProgramEnv/Mac',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
     "accept-language": 'zh-cn',
-    "Authorization": 'wxmp.5bc12c75-bbe4-4022-bd1e-ff8d75f27007',
+    'Authorization': 'wxmp.ba6d4702-ca72-4b2e-a1a3-8b396fc63c8e',
+    'Referer':'https://servicewechat.com/wxb296433268a1c654/60/page-frame.html'
 }
 
 
