@@ -25,7 +25,7 @@ test_user_note = 'https://www.xiaohongshu.com/fe_api/burdock/weixin/v2/user/5ef9
 headers_xiao_hong_shu_note = {
     'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E217 MicroMessenger/6.8.0(0x16080000) NetType/WIFI Language/en Branch/Br_trunk MiniProgramEnv/Mac',
     "accept-language": 'zh-CN,zh;q=0.9,ko;q=0.8,en;q=0.7',
-    'Authorization': 'wxmp.ba6d4702-ca72-4b2e-a1a3-8b396fc63c8e',
+    'Authorization': 'wxmp.5bc12c75-bbe4-4022-bd1e-ff8d75f27007',
 }
 
 # 添加user请求头
@@ -33,7 +33,7 @@ headers_xiao_hong_shu_note = {
 headers_user = {
     'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E217 MicroMessenger/6.8.0(0x16080000) NetType/WIFI Language/en Branch/Br_trunk MiniProgramEnv/Mac',
     "accept-language": 'zh-CN,zh;q=0.9,ko;q=0.8,en;q=0.7',
-    "Authorization": 'wxmp.ba6d4702-ca72-4b2e-a1a3-8b396fc63c8e',
+    "Authorization": 'wxmp.5bc12c75-bbe4-4022-bd1e-ff8d75f27007',
 }
 
 
@@ -90,7 +90,7 @@ def py_note_url(url):
     :param url:
     :return:
     """
-    res = requests.get(url, headers=headers_xiao_hong_shu_note)
+    res = requests.get(url, headers=headers_xiao_hong_shu_note, verify=False)
     res.encoding = 'utf-8'
     str_json = json.loads(res.content)
     str_likes = str_json['data']['likes']  # 赞
@@ -134,7 +134,7 @@ def get_user_note(uid):
     print(x_sign)
     headers_user['x-sign'] = x_sign
     res = requests.get('https://www.xiaohongshu.com/fe_api/burdock/weixin/v2/user/' +
-                       uid+'/notes?page=1&page_size=15', headers=headers_user)
+                       uid+'/notes?page=1&page_size=15', headers=headers_user, verify=False)
     res.encoding = 'utf-8'
     return res.content
 
@@ -150,7 +150,7 @@ def get_base_info(uid):
     print(x_sign)
     headers_user['x-sign'] = x_sign
     res = requests.get('https://www.xiaohongshu.com/fe_api/burdock/weixin/v2/user/' +
-                       uid, headers=headers_user)
+                       uid, headers=headers_user, verify=False)
     res.encoding = 'utf-8'
     return res.content
 
@@ -177,7 +177,7 @@ def get_note_info(uuid):
     :return:
     """
     note_url = "https://www.xiaohongshu.com/fe_api/burdock/weixin/v2/note/" + \
-        str(uuid) + '/single_feed'
+        str(uuid)
     x_sign_note = get_xsign_note(uuid)  # 获取x_sign_note = 值
     print(x_sign_note)
     headers_xiao_hong_shu_note['x-sign'] = x_sign_note
