@@ -34,8 +34,8 @@ headers_xiao_hong_shu_note = {
     'Accept':'*/*',
     'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E217 MicroMessenger/6.8.0(0x16080000) NetType/WIFI Language/en Branch/Br_trunk MiniProgramEnv/Mac',
     "Accept-Language": 'zh-cn',
-    'Authorization': 'wxmp.ba6d4702-ca72-4b2e-a1a3-8b396fc63c8e',
-    'Referer':'https://servicewechat.com/wxb296433268a1c654/60/page-frame.html'
+    'Authorization': 'wxmp.bb825451-e7cb-40c8-aa56-f419c84b127a',
+    'Referer':'https://servicewechat.com/wx94bcdf673c59f9f6/7/page-frame.html'
 }
 
 # 添加user请求头
