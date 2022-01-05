@@ -26,6 +26,7 @@ g_proxies = {'http': '120.236.128.201:8060',
 }
 
 headers_xiao_hong_shu_note = {
+    'Device-Fingerprint':'WHJMrwNw1k/GJYr0qPYYVhTHEl38cgyO119NEdIp5qqYPw8yfXtplDZOiE2prGJgiezzCbsU1KiT1d/6Ydtd+aqBw+NLk6u5CdCW1tldyDzmauSxIJm5Txg==1487582755342',
     'Host':'www.xiaohongshu.com',
     'Content-Type':'application/json',
     'Accept-Encoding':'gzip, deflate, br',
