@@ -21,6 +21,9 @@ test_user_note = 'https://www.xiaohongshu.com/fe_api/burdock/weixin/v2/user/5ef9
 ############ 小红书笔记信息获取 核心代码 ##################################
 
 # 笔记的请求头 拼接x-sign字段
+g_proxies = {'http': '120.236.128.201:8060',
+ 'https': '120.236.128.201:8060'
+}
 
 headers_xiao_hong_shu_note = {
     'Host':'www.xiaohongshu.com',
@@ -100,6 +103,7 @@ def py_note_url(url):
     res = requests.get(url, headers=headers_xiao_hong_shu_note, verify=False)
     res.encoding = 'utf-8'
     str_json = json.loads(res.content)
+    print(res.content)
     str_likes = str_json['data']['likes']  # 赞
     str_comments = str_json['data']['comments']  # 评论
     str_share_count = str_json['data']['shareCount']  # 转发
