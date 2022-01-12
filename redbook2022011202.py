@@ -1,6 +1,7 @@
 # 爬取千瓜的接口
 import requests
 from flask import Flask
+import json
 
 __all__ = {
     "get_token_user",
@@ -29,14 +30,6 @@ g_xhs_headers = {
 }
 
 
-##################### 千瓜相关End  #######################
-
-#####################   测试调用 Begin ##########################
-
-
-urllink = "https://www.xiaohongshu.com/discovery/item/61d81a24000000000102ed54"
-
-
 def get_note_url(urlink):
     url = "http://api.qian-gua.com/Track/SearchNoteByUrl?url=" + urlink
     res = requests.get(url, headers=g_headers)
@@ -44,13 +37,6 @@ def get_note_url(urlink):
     code = res.content
     html_doc = str(code, 'utf-8')
     return html_doc
-
-# 用户主页信息
-
-
-# test_url(res_url)
-#####################    End   #################################
-
 
 ####################   Flask Begin #######################
 app = Flask(__name__)
@@ -79,15 +65,33 @@ def get_base_info(uid):
         "pageSize": 10
     }
     resp = requests.post(api_qiangua, headers=g_headers,data=post_data)
-    print(resp.content)
-    return resp.content
+    result = json.loads(resp.content)
+    data = result["Data"]["ItemList"]
+    result_data = data[0]
+    print(result_data)
+    print(result_data["RedId"])
+    return result_data
 
 
 @app.route('/note_info/<uuid>')
 def get_note_info(uuid):
     red_link = "https://www.xiaohongshu.com/discovery/item/" + uuid
-    result = get_note_url(red_link)
-    return result
+    result_str = get_note_url(red_link)
+    print(type(result_str))
+    result = json.loads(result_str)
+    # # 笔记信息拼接
+    rtn_json = {
+        'likes': str(result["Data"]["LikedCount"]),  # 赞
+        'comments': str(result["Data"]["CommentsCount"]),  # 评论
+        'shareCount': str(result["Data"]["ShareCount"]),  # 转发
+        'collects': str(result["Data"]["CollectedCount"]),  # 收藏
+        'title': str(result["Data"]["Title"]),  # 标题
+        'desc': str(result["Data"]["BloggerProp"]), # 描述
+        'time': str(result["Data"]["PubDate"]),
+        'nickname': str(result["Data"]["BloggerName"]),
+        'image': str(result["Data"]["BloggerSmallAvatar"]),
+    }
+    return rtn_json
 
 ####################   Flask End #######################
 
