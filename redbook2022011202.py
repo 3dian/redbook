@@ -15,7 +15,7 @@ def get_token_user():
      获取用户的token
      目前先使用测试的token 后续优化
     '''
-    user_token = "Hm_lvt_c6d9cdbaf0b464645ff2ee32a71ea1ae=1641955208; ASP.NET_SessionId=qoww2k4rilp33bppoua3ux1m; User=UserId=87412c3500555d06&Password=2fedbb2fe284c648a670431557ae8dff&ChildId=0; Hm_lpvt_c6d9cdbaf0b464645ff2ee32a71ea1ae=1641975407"
+    user_token = "Hm_lvt_c6d9cdbaf0b464645ff2ee32a71ea1ae=1642341709; ASP.NET_SessionId=qvd04ieeftgqkqsudvs2znfj; User=UserId=87412c3500555d06&Password=102bc74ad6d2adb92543d5872ab3885e&ChildId=0; Hm_lpvt_c6d9cdbaf0b464645ff2ee32a71ea1ae=1642343371"
     return user_token
 
 
@@ -66,6 +66,7 @@ def get_base_info(uid):
     }
     resp = requests.post(api_qiangua, headers=g_headers,data=post_data)
     result = json.loads(resp.content)
+    print(resp.content)
     data = result["Data"]["ItemList"]
     result_data = data[0]
     print(result_data)
