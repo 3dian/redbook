@@ -1,44 +1,139 @@
-# 爬取千瓜的接口
-import requests
-from flask import Flask
+# -*- coding:utf-8 -*-
+
+# 用户Sessionid = 1616761780919058355044 不变
+
+# 爬取小红书相关信息
+
 import json
+import requests
+from bs4 import BeautifulSoup
+from flask import Flask, request
+import hashlib
+import urllib
 
-__all__ = {
-    "get_token_user",
+# 测试数据:
+
+test_user_id = 'http://10.203.26.118:8001/base_info/5ef951a000000000010078d2'
+test_note_id = 'http://10.203.26.118:8001/note_info/60bae5ae0000000001029b28'
+test_note_list_id = 'http://10.203.26.118:8001/user_note/5ef951a000000000010078d2'
+test_user_note = 'https://www.xiaohongshu.com/fe_api/burdock/weixin/v2/user/5ef951a000000000010078d2/notes?page=1&page_size=15'
+
+############ 小红书笔记信息获取 核心代码 ##################################
+
+# 笔记的请求头 拼接x-sign字段
+g_proxies = {'https': 'https://222.218.122.104:9999',
+             'http': 'http://222.218.122.104:9999'
+             }
+
+headers_xiao_hong_shu_note = {
+    'Device-Fingerprint': 'WHJMrwNw1k/GJYr0qPYYVhTHEl38cgyO119NEdIp5qqYPw8yfXtplDZOiE2prGJgiezzCbsU1KiT1d/6Ydtd+aqBw+NLk6u5CdCW1tldyDzmauSxIJm5Txg==1487582755342',
+    'Host': 'www.xiaohongshu.com',
+    'Content-Type': 'application/json',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Connection': 'keep-alive',
+    'Accept': '*/*',
+    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E217 MicroMessenger/6.8.0(0x16080000) NetType/WIFI Language/en Branch/Br_trunk MiniProgramEnv/Mac',
+    "Accept-Language": 'zh-cn',
+    'Authorization': 'wxmp.ba6d4702-ca72-4b2e-a1a3-8b396fc63c8e',
+    'Referer': 'https://servicewechat.com/wx94bcdf673c59f9f6/7/page-frame.html'
 }
 
-##################### 千瓜相关Begin  #######################
+# 添加user请求头
 
-
-def get_token_user():
-    '''
-     获取用户的token
-     目前先使用测试的token 后续优化
-    '''
-    user_token = "Hm_lvt_c6d9cdbaf0b464645ff2ee32a71ea1ae=1642341709; ASP.NET_SessionId=qvd04ieeftgqkqsudvs2znfj; User=UserId=87412c3500555d06&Password=102bc74ad6d2adb92543d5872ab3885e&ChildId=0; Hm_lpvt_c6d9cdbaf0b464645ff2ee32a71ea1ae=1642343371"
-    return user_token
-
-
-g_headers = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
-    "Cookie": get_token_user()
-}
-
-g_xhs_headers = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
-    "Cookie": "xhsTrackerId=ad65feac-1b9f-420f-c282-4068c1f82434; xhsTracker=url=noteDetail&searchengine=baidu; customerClientId=072754555480177; smidV2=202201061625174782003dd7b6beec15ce749a80e87b54008ad4cba532361d0; extra_exp_ids=commentshow_clt1,gif_clt1,ques_exp2; timestamp2=20220112260213bf67ea32a131a4ad20; timestamp2.sig=ZX4lJUSVZY5_GcQ9NfzRryRkBrLdIptSWWA8BxXRIEk"
+headers_user = {
+    'Device-Fingerprint': 'WHJMrwNw1k/GJYr0qPYYVhTHEl38cgyO119NEdIp5qqYPw8yfXtplDZOiE2prGJgiezzCbsU1KiT1d/6Ydtd+aqBw+NLk6u5CdCW1tldyDzmauSxIJm5Txg==1487582755342',
+    'Host': 'www.xiaohongshu.com',
+    'Content-Type': 'application/json',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Connection': 'keep-alive',
+    'Accept': '*/*',
+    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E217 MicroMessenger/6.8.0(0x16080000) NetType/WIFI Language/en Branch/Br_trunk MiniProgramEnv/Mac',
+    "Accept-Language": 'zh-cn',
+    'Authorization': 'wxmp.ba6d4702-ca72-4b2e-a1a3-8b396fc63c8e',
+    'Referer': 'https://servicewechat.com/wx94bcdf673c59f9f6/7/page-frame.html'
 }
 
 
-def get_note_url(urlink):
-    url = "http://api.qian-gua.com/Track/SearchNoteByUrl?url=" + urlink
-    res = requests.get(url, headers=g_headers)
+def get_xsign_notelist(user_id):
+    data = f"/fe_api/burdock/weixin/v2/user/{user_id}/notes?page=1&page_size=15WSUDD"
+    m = hashlib.md5(data.encode())
+    sign = m.hexdigest()
+    return "X" + sign
+
+
+def get_xsign_user(user_id):
+    data = f"/fe_api/burdock/weixin/v2/user/{user_id}WSUDD"
+    m = hashlib.md5(data.encode())
+    sign = m.hexdigest()
+    return "X" + sign
+
+
+def get_xsign_note(item_id):
+    """
+    获取笔记id的x-sign
+    :param item_id:
+    :return:
+    """
+    url_ = 'https://www.xiaohongshu.com/fe_api/burdock/weixin/v2/note/' + \
+        str(item_id) + "/single_feed"
+    data = url_[27:] + "WSUDD"
+    m = hashlib.md5(data.encode())
+    sign = m.hexdigest()
+    return "X" + sign
+
+
+################################End######################################
+
+######################非核心模块########################
+
+# 全局变量使用大写，其余全部小写
+
+SLICE_URL = "https://www.xiaohongshu.com/user/profile/"
+
+# 如果测试失败的话 需要更新cookie 即更改G_RED_BOOK_COOKIE 即可
+
+G_RED_BOOK_COOKIE = "kong_html_injector=1613982768; kong_path_inject=/user/profile/5c908e080000000012004390; xhsTrackerId=6c386e29-cd41-47ae-c700-5d74f13b3f09; xhsuid=bMo3QFwbfPV4WChs; timestamp2=20210529952d9f7c12ac396212e02216; timestamp2.sig=6n3DRvj4YMS5hupgwlfaztbElBWMSzDIpNHsiJow0SY; lang=en-US; smidV2=2021052913550488075f3e9f1c752d70bc958ae0f9c1bb0043cedad1f8eb540; extra_exp_ids=gif_clt1,ques_exp1"
+g_cookies = dict(map(lambda x: x.split('='), G_RED_BOOK_COOKIE.split(";")))
+
+# g_rtn_json 用于记录获取的数据
+
+g_rtn_json = {
+}
+
+
+def py_note_url(url):
+    """
+    爬取笔记相关的信息
+    :param url:
+    :return:
+    """
+    res = requests.get(url, headers=headers_xiao_hong_shu_note,
+                       proxies=g_proxies, verify=False)
     res.encoding = 'utf-8'
-    code = res.content
-    html_doc = str(code, 'utf-8')
-    return html_doc
+    str_json = json.loads(res.content)
+    print(res.content)
+    str_likes = str_json['data']['likes']  # 赞
+    str_comments = str_json['data']['comments']  # 评论
+    str_share_count = str_json['data']['shareCount']  # 转发
+    str_collect = str_json['data']['collects']  # 收藏
+    print(str_json['data']['user']['nickname'])
+    rtn_json = {
+        'likes': str_likes,  # 赞
+        'comments': str_comments,  # 评论
+        'shareCount': str_share_count,  # 转发
+        'collects': str_collect,  # 收藏
+        'title': str_json['data']['title'],  # 标题
+        'desc': str_json['data']['desc'],  # 描述
+        'time': str_json['data']['time'],
+        'nickname': str_json['data']['user']['nickname'],
+        'image': str_json['data']['user']['image']
+    }
+    print(rtn_json)
+    return rtn_json
 
-####################   Flask Begin #######################
+
+####################Flask请求封装开始################################################
+
 app = Flask(__name__)
 
 
@@ -47,56 +142,71 @@ def hello_world():
     return 'HelloWorld'
 
 
+@app.route('/user_note/<uid>')
+def get_user_note(uid):
+    """
+    获取用户笔记list信息
+    :param uid:
+    :return:
+    """
+    x_sign = get_xsign_notelist(uid)
+    print(x_sign)
+    headers_user['x-sign'] = x_sign
+    res = requests.get('https://www.xiaohongshu.com/fe_api/burdock/weixin/v2/user/' +
+                       uid+'/notes?page=1&page_size=15', proxies=g_proxies, headers=headers_user, verify=False)
+    res.encoding = 'utf-8'
+    return res.content
+
+
 @app.route('/base_info/<uid>')
 def get_base_info(uid):
-    link = "https://www.xiaohongshu.com/user/profile/" + uid
-    res = requests.get(link, headers=g_xhs_headers)
-    html_doc = str(res.content, 'utf-8')
-    n_pos = html_doc.find('''"redId":"''')
-    str_ = html_doc[n_pos:]
-    h_pos = str_.find(",")
-    red_id = str_[9:h_pos-1]
-    print("red_id:" + red_id)
-    api_qiangua = 'http://api.qian-gua.com/blogger/GetList'
-    post_data = {
-        "KeyWord": red_id,
-        "SortType": 0,
-        "pageIndex": 1,
-        "pageSize": 10
-    }
-    resp = requests.post(api_qiangua, headers=g_headers,data=post_data)
-    result = json.loads(resp.content)
-    print(resp.content)
-    data = result["Data"]["ItemList"]
-    result_data = data[0]
-    print(result_data)
-    print(result_data["RedId"])
-    return result_data
+    """
+    获取相关信息
+    :param uid:
+    :return:
+    """
+    x_sign = get_xsign_user(uid)
+    print(x_sign)
+    headers_user['x-sign'] = x_sign
+    res = requests.get('https://www.xiaohongshu.com/fe_api/burdock/weixin/v2/user/' +
+                       uid, headers=headers_user, verify=False)
+    res.encoding = 'utf-8'
+    return res.content
+
+
+@app.route('/item_link/<key>')
+def get_item_url(key):
+    """
+    获取item_url
+    :param item_url:
+    :return:
+    """
+    item_url = "http://xhslink.com/" + key
+    res = requests.get(item_url, allow_redirects=True)
+    url_ = urllib.parse.unquote(res.url)
+    sp = url_.split("redirectPath=")
+    res_p = sp[1]
+    return res_p
 
 
 @app.route('/note_info/<uuid>')
 def get_note_info(uuid):
-    red_link = "https://www.xiaohongshu.com/discovery/item/" + uuid
-    result_str = get_note_url(red_link)
-    print(type(result_str))
-    result = json.loads(result_str)
-    # # 笔记信息拼接
-    rtn_json = {
-        'likes': str(result["Data"]["LikedCount"]),  # 赞
-        'comments': str(result["Data"]["CommentsCount"]),  # 评论
-        'shareCount': str(result["Data"]["ShareCount"]),  # 转发
-        'collects': str(result["Data"]["CollectedCount"]),  # 收藏
-        'title': str(result["Data"]["Title"]),  # 标题
-        'desc': str(result["Data"]["BloggerProp"]), # 描述
-        'time': str(result["Data"]["PubDate"]),
-        'nickname': str(result["Data"]["BloggerName"]),
-        'image': str(result["Data"]["BloggerSmallAvatar"]),
-    }
+    """
+    :param uuid:
+    :return:
+    """
+    note_url = "https://www.xiaohongshu.com/fe_api/burdock/weixin/v2/note/" + \
+        str(uuid) + "/single_feed"
+    x_sign_note = get_xsign_note(uuid)  # 获取x_sign_note = 值
+    print("x-sign:"+x_sign_note)
+    headers_xiao_hong_shu_note['x-sign'] = x_sign_note
+    rtn_json = py_note_url(note_url)
     return rtn_json
 
-####################   Flask End #######################
 
+#####################Flask请求结束###################################################
 
-####################   启动服务  #########################
+# end
+
 if __name__ == '__main__':
     app.run('0.0.0.0', port=8001)
